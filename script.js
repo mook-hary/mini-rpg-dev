@@ -25,4 +25,5 @@ function render() {
   drawPlayer();
 }
 
+input.init();
 render();
