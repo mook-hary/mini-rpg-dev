@@ -12,8 +12,16 @@ const player = {
   y: (canvas.height - PLAYER.size) / 2,
 };
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+function tryMove(dx, dy) {
+  const nextX = player.x + dx;
+  if (canMoveTo(nextX, player.y, PLAYER.size, PLAYER.size)) {
+    player.x = nextX;
+  }
+
+  const nextY = player.y + dy;
+  if (canMoveTo(player.x, nextY, PLAYER.size, PLAYER.size)) {
+    player.y = nextY;
+  }
 }
 
 function update() {
@@ -25,8 +33,7 @@ function update() {
   if (input.isPressed("up")) dy -= PLAYER.speed;
   if (input.isPressed("down")) dy += PLAYER.speed;
 
-  player.x = clamp(player.x + dx, 0, canvas.width - PLAYER.size);
-  player.y = clamp(player.y + dy, 0, canvas.height - PLAYER.size);
+  tryMove(dx, dy);
 }
 
 function drawPlayer() {
@@ -36,6 +43,7 @@ function drawPlayer() {
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawMap(ctx);
   drawPlayer();
 }
 
