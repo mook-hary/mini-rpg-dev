@@ -1,15 +1,36 @@
 const TILE = {
   FLOOR: 0,
   WALL: 1,
+  START: 2,
 };
 
 const MAP = {
-  cols: 20,
-  rows: 15,
+  cols: 40,
+  rows: 30,
   tileSize: 32,
   floorColor: "#3a5f4b",
   wallColor: "#6b5344",
 };
+
+function fillHorizontalWall(data, startCol, row, length) {
+  for (let col = startCol; col < startCol + length; col++) {
+    data[row][col] = TILE.WALL;
+  }
+}
+
+function fillVerticalWall(data, col, startRow, length) {
+  for (let row = startRow; row < startRow + length; row++) {
+    data[row][col] = TILE.WALL;
+  }
+}
+
+function fillWallRect(data, startCol, startRow, width, height) {
+  for (let row = startRow; row < startRow + height; row++) {
+    for (let col = startCol; col < startCol + width; col++) {
+      data[row][col] = TILE.WALL;
+    }
+  }
+}
 
 function buildMapData() {
   const data = Array.from({ length: MAP.rows }, () =>
@@ -24,23 +45,33 @@ function buildMapData() {
     }
   }
 
-  for (let x = 5; x <= 9; x++) {
-    data[5][x] = TILE.WALL;
-  }
+  fillHorizontalWall(data, 6, 8, 10);
+  fillHorizontalWall(data, 24, 8, 10);
 
-  for (let y = 4; y <= 8; y++) {
-    data[y][14] = TILE.WALL;
-  }
+  fillHorizontalWall(data, 4, 22, 12);
+  fillHorizontalWall(data, 24, 22, 12);
 
-  for (let y = 10; y <= 11; y++) {
-    for (let x = 8; x <= 9; x++) {
-      data[y][x] = TILE.WALL;
-    }
-  }
+  fillVerticalWall(data, 10, 4, 8);
+  fillVerticalWall(data, 30, 4, 8);
+  fillVerticalWall(data, 10, 20, 8);
+  fillVerticalWall(data, 30, 18, 8);
 
-  for (let x = 15; x <= 18; x++) {
-    data[11][x] = TILE.WALL;
-  }
+  fillHorizontalWall(data, 5, 15, 13);
+  fillHorizontalWall(data, 23, 15, 12);
+
+  fillVerticalWall(data, 20, 5, 8);
+  fillVerticalWall(data, 20, 18, 8);
+
+  fillWallRect(data, 5, 5, 3, 3);
+  fillWallRect(data, 32, 5, 3, 3);
+  fillWallRect(data, 5, 24, 3, 3);
+  fillWallRect(data, 32, 24, 3, 3);
+  fillWallRect(data, 14, 12, 2, 2);
+  fillWallRect(data, 25, 12, 2, 2);
+  fillWallRect(data, 14, 18, 2, 2);
+  fillWallRect(data, 25, 18, 2, 2);
+
+  data[15][20] = TILE.START;
 
   return data;
 }
@@ -48,7 +79,35 @@ function buildMapData() {
 const mapData = buildMapData();
 
 function getTileColor(tile) {
-  return tile === TILE.WALL ? MAP.wallColor : MAP.floorColor;
+  if (tile === TILE.WALL) {
+    return MAP.wallColor;
+  }
+
+  return MAP.floorColor;
+}
+
+function findStartTile() {
+  for (let row = 0; row < MAP.rows; row++) {
+    for (let col = 0; col < MAP.cols; col++) {
+      if (mapData[row][col] === TILE.START) {
+        return { col, row };
+      }
+    }
+  }
+
+  return null;
+}
+
+function getPlayerStartPosition(playerSize) {
+  const startTile = findStartTile();
+  if (!startTile) {
+    throw new Error("Start tile not found in map data");
+  }
+
+  return {
+    x: startTile.col * MAP.tileSize + (MAP.tileSize - playerSize) / 2,
+    y: startTile.row * MAP.tileSize + (MAP.tileSize - playerSize) / 2,
+  };
 }
 
 function getTileAt(col, row) {
@@ -65,6 +124,14 @@ function isWallTile(col, row) {
 
 function worldToTile(pixel) {
   return Math.floor(pixel / MAP.tileSize);
+}
+
+function getMapPixelWidth() {
+  return MAP.cols * MAP.tileSize;
+}
+
+function getMapPixelHeight() {
+  return MAP.rows * MAP.tileSize;
 }
 
 function drawMap(ctx) {

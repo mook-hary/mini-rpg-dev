@@ -7,9 +7,11 @@ const PLAYER = {
   color: "#3b82f6",
 };
 
+const startPosition = getPlayerStartPosition(PLAYER.size);
+
 const player = {
-  x: (canvas.width - PLAYER.size) / 2,
-  y: (canvas.height - PLAYER.size) / 2,
+  x: startPosition.x,
+  y: startPosition.y,
 };
 
 function tryMove(dx, dy) {
@@ -43,15 +45,19 @@ function drawPlayer() {
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  applyCamera(ctx);
   drawMap(ctx);
   drawPlayer();
+  resetCamera(ctx);
 }
 
 function gameLoop() {
   update();
+  updateCamera(canvas.width, canvas.height, player, PLAYER.size);
   render();
   requestAnimationFrame(gameLoop);
 }
 
 input.init();
+updateCamera(canvas.width, canvas.height, player, PLAYER.size);
 gameLoop();
