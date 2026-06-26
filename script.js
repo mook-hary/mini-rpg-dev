@@ -1,12 +1,6 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-const PLAYER = {
-  size: 32,
-  speed: 4,
-  color: "#3b82f6",
-};
-
 const DIRECTION = {
   UP: "up",
   DOWN: "down",
@@ -20,6 +14,8 @@ const player = {
   x: startPosition.x,
   y: startPosition.y,
   direction: DIRECTION.DOWN,
+  isMoving: false,
+  animationFrame: 0,
 };
 
 function getDirectionFromInput(dx, dy) {
@@ -62,6 +58,7 @@ function update() {
   handleActionInput();
 
   if (typeof isDialogueOpen === "function" && isDialogueOpen()) {
+    resetPlayerAnimation(player);
     return;
   }
 
@@ -75,6 +72,7 @@ function update() {
 
   updateDirection(dx, dy);
   tryMove(dx, dy);
+  updatePlayerAnimation(player, dx, dy);
 }
 
 function handleActionInput() {
@@ -93,17 +91,12 @@ function handleActionInput() {
   handleFrontInteraction(player, PLAYER.size);
 }
 
-function drawPlayer() {
-  ctx.fillStyle = PLAYER.color;
-  ctx.fillRect(player.x, player.y, PLAYER.size, PLAYER.size);
-}
-
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   applyCamera(ctx);
   drawMap(ctx);
   drawNpcs(ctx);
-  drawPlayer();
+  drawPlayer(ctx, player);
   resetCamera(ctx);
 }
 
