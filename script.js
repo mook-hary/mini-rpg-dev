@@ -96,10 +96,12 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   applyCamera(ctx);
   drawMap(ctx);
+  drawDoors(ctx);
   drawItems(ctx);
   drawNpcs(ctx);
   drawPlayer(ctx, player);
   resetCamera(ctx);
+  drawInventory(ctx);
 }
 
 function gameLoop() {

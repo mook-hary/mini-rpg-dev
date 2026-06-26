@@ -37,6 +37,14 @@ function handleFrontInteraction(player, playerSize) {
     return;
   }
 
+  const frontTile = getFrontTile(player, playerSize);
+  const door = getDoorAtTile(frontTile.col, frontTile.row);
+
+  if (door && !door.opened) {
+    tryInteractDoor(door);
+    return;
+  }
+
   const npc = getNpcAtFront(player, playerSize);
   if (npc) {
     openDialogue(npc);

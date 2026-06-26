@@ -29,6 +29,7 @@ function isBlockedRect(x, y, width, height) {
 function canMoveTo(x, y, width, height) {
   return (
     !isBlockedRect(x, y, width, height) &&
-    !isNpcBlockedRect(x, y, width, height)
+    !isNpcBlockedRect(x, y, width, height) &&
+    !isDoorBlockedRect(x, y, width, height)
   );
 }

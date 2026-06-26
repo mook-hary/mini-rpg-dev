@@ -5,12 +5,38 @@ const ITEM = {
 
 const items = [
   {
-    id: "coin1",
-    name: "コイン",
+    id: "coin",
+    name: "Coin",
     col: 16,
     row: 10,
     collected: false,
     collectMessage: "コインを手に入れた！",
+  },
+  {
+    id: "coin",
+    name: "Coin",
+    col: 18,
+    row: 10,
+    collected: false,
+    collectMessage: "コインを手に入れた！",
+  },
+  {
+    id: "potion",
+    name: "Potion",
+    col: 22,
+    row: 10,
+    collected: false,
+    collectMessage: "ポーションを手に入れた！",
+    color: "#4ade80",
+  },
+  {
+    id: "key",
+    name: "Key",
+    col: 17,
+    row: 13,
+    collected: false,
+    collectMessage: "鍵を手に入れた！",
+    color: "#c084fc",
   },
 ];
 
@@ -35,6 +61,7 @@ function getItemAtTile(col, row) {
 
 function collectItem(item) {
   item.collected = true;
+  addItem(item.id, item.name);
   showTransientMessage(item.collectMessage);
 }
 
@@ -59,7 +86,7 @@ function drawItems(ctx) {
     const centerY = y + ITEM.size / 2;
     const radius = ITEM.size / 2;
 
-    ctx.fillStyle = ITEM.color;
+    ctx.fillStyle = item.color ?? ITEM.color;
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     ctx.fill();
