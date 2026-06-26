@@ -31,13 +31,14 @@ function getNpcAtFront(player, playerSize) {
   return getNpcAtTile(frontTile.col, frontTile.row);
 }
 
-function checkFrontInteraction(player, playerSize) {
-  const npc = getNpcAtFront(player, playerSize);
-
-  if (npc) {
-    console.log("NPC:", npc);
+function handleFrontInteraction(player, playerSize) {
+  if (isDialogueOpen()) {
+    closeDialogue();
     return;
   }
 
-  console.log("前方にNPCなし");
+  const npc = getNpcAtFront(player, playerSize);
+  if (npc) {
+    openDialogue(npc);
+  }
 }

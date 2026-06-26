@@ -59,6 +59,12 @@ function tryMove(dx, dy) {
 }
 
 function update() {
+  handleActionInput();
+
+  if (typeof isDialogueOpen === "function" && isDialogueOpen()) {
+    return;
+  }
+
   let dx = 0;
   let dy = 0;
 
@@ -69,7 +75,6 @@ function update() {
 
   updateDirection(dx, dy);
   tryMove(dx, dy);
-  handleActionInput();
 }
 
 function handleActionInput() {
@@ -81,12 +86,11 @@ function handleActionInput() {
     return;
   }
 
-  if (typeof checkFrontInteraction !== "function") {
-    console.warn("checkFrontInteraction is not available");
+  if (typeof handleFrontInteraction !== "function") {
     return;
   }
 
-  checkFrontInteraction(player, PLAYER.size);
+  handleFrontInteraction(player, PLAYER.size);
 }
 
 function drawPlayer() {

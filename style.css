@@ -12,7 +12,26 @@ body {
   background: #1a1a2e;
 }
 
+#game-container {
+  position: relative;
+}
+
 #game {
   display: block;
   background: #0f0f1a;
+}
+
+#dialogue-box {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  padding: 16px;
+  background: rgba(15, 15, 26, 0.95);
+  border: 2px solid #6b5344;
+  border-radius: 8px;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
 }
