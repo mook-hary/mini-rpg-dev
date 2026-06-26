@@ -5,6 +5,7 @@ const NPC = {
 
 const npcs = [
   { id: "npc1", col: 28, row: 12 },
+  { id: "npc2", col: 12, row: 18 },
 ];
 
 function tileToWorldPosition(col, row, size) {

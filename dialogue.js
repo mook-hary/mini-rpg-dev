@@ -1,5 +1,6 @@
 const DIALOGUES = {
   npc1: "こんにちは！",
+  npc2: "ようこそ！",
 };
 
 const dialogue = {
