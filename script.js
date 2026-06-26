@@ -73,6 +73,7 @@ function update() {
   updateDirection(dx, dy);
   tryMove(dx, dy);
   updatePlayerAnimation(player, dx, dy);
+  checkItemCollection(player, PLAYER.size);
 }
 
 function handleActionInput() {
@@ -95,6 +96,7 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   applyCamera(ctx);
   drawMap(ctx);
+  drawItems(ctx);
   drawNpcs(ctx);
   drawPlayer(ctx, player);
   resetCamera(ctx);

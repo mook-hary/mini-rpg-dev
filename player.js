@@ -6,28 +6,71 @@ const PLAYER = {
 // 歩行中の足踏み揺れ量（px）
 const WALK_BOB_AMOUNT = 2;
 
-// M8: 向きごとの仮色。PNG 導入後は images を使い colors はフォールバック用に残せる
+// 主人公スプライト設定
 const PLAYER_SPRITE = {
-  colors: {
-    up: "#60a5fa",
-    down: "#3b82f6",
-    left: "#2563eb",
-    right: "#1d4ed8",
+  // PNG ファイルパス（ファイルを置くだけで自動読み込み）
+  paths: {
+    up: "sprites/player/up.png",
+    down: "sprites/player/down.png",
+    left: "sprites/player/left.png",
+    right: "sprites/player/right.png",
   },
-  // 将来の PNG パス（M8 では null のまま未使用）
+  // 読み込み済み Image オブジェクト（未読込・失敗時は null のまま）
   images: {
     up: null,
     down: null,
     left: null,
     right: null,
   },
+  // 画像がない間のフォールバック色（M8/M9）
+  colors: {
+    up: "#60a5fa",
+    down: "#3b82f6",
+    left: "#2563eb",
+    right: "#1d4ed8",
+  },
 };
+
+function loadImage(src) {
+  return new Promise((resolve) => {
+    const image = new Image();
+
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
+// 全方向の PNG を非同期読み込み（失敗した方向は四角描画にフォールバック）
+async function loadPlayerSprites() {
+  const directions = Object.keys(PLAYER_SPRITE.paths);
+
+  await Promise.all(
+    directions.map(async (direction) => {
+      const image = await loadImage(PLAYER_SPRITE.paths[direction]);
+
+      if (image) {
+        PLAYER_SPRITE.images[direction] = image;
+      }
+    })
+  );
+}
+
+// 指定方向の PNG が利用可能か判定
+function getPlayerSpriteImage(direction) {
+  const image = PLAYER_SPRITE.images[direction];
+
+  if (image && image.complete && image.naturalWidth > 0) {
+    return image;
+  }
+
+  return null;
+}
 
 function getPlayerSpriteColor(direction) {
   return PLAYER_SPRITE.colors[direction] ?? PLAYER_SPRITE.colors.down;
 }
 
-// 移動入力に応じて isMoving / animationFrame を更新（PNG フレーム切替にも流用可）
 function updatePlayerAnimation(player, dx, dy) {
   player.isMoving = dx !== 0 || dy !== 0;
 
@@ -39,13 +82,11 @@ function updatePlayerAnimation(player, dx, dy) {
   player.animationFrame = 0;
 }
 
-// 会話中など、移動停止時にアニメーション状態をリセット
 function resetPlayerAnimation(player) {
   player.isMoving = false;
   player.animationFrame = 0;
 }
 
-// 歩行中だけ描画位置を少しずらして足踏みを表現（当たり判定座標は変えない）
 function getWalkBobOffset(player) {
   if (!player.isMoving) {
     return { x: 0, y: 0 };
@@ -60,18 +101,16 @@ function getWalkBobOffset(player) {
   return { x: 0, y: bob };
 }
 
-// 仮描画：向きに応じた色の四角（画像がない間のプレースホルダー）
 function drawPlayerPlaceholder(ctx, x, y, direction) {
   ctx.fillStyle = getPlayerSpriteColor(direction);
   ctx.fillRect(x, y, PLAYER.size, PLAYER.size);
 }
 
-// スプライト本体。PNG があれば drawImage、なければプレースホルダー
 function drawPlayerSprite(ctx, player) {
   const { x: bobX, y: bobY } = getWalkBobOffset(player);
   const drawX = player.x + bobX;
   const drawY = player.y + bobY;
-  const image = PLAYER_SPRITE.images[player.direction];
+  const image = getPlayerSpriteImage(player.direction);
 
   if (image) {
     ctx.drawImage(image, drawX, drawY, PLAYER.size, PLAYER.size);
@@ -81,7 +120,8 @@ function drawPlayerSprite(ctx, player) {
   drawPlayerPlaceholder(ctx, drawX, drawY, player.direction);
 }
 
-// 主人公描画のエントリポイント（render からはこの関数だけ呼ぶ）
 function drawPlayer(ctx, player) {
   drawPlayerSprite(ctx, player);
 }
+
+loadPlayerSprites();

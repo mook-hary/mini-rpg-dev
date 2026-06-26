@@ -138,13 +138,10 @@ function drawMap(ctx) {
   for (let row = 0; row < MAP.rows; row++) {
     for (let col = 0; col < MAP.cols; col++) {
       const tile = mapData[row][col];
-      ctx.fillStyle = getTileColor(tile);
-      ctx.fillRect(
-        col * MAP.tileSize,
-        row * MAP.tileSize,
-        MAP.tileSize,
-        MAP.tileSize
-      );
+      const x = col * MAP.tileSize;
+      const y = row * MAP.tileSize;
+
+      drawTile(ctx, tile, x, y);
     }
   }
 }

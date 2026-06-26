@@ -44,3 +44,30 @@ function closeDialogue() {
   dialogue.currentNpc = null;
   box.hidden = true;
 }
+
+let messageTimer = null;
+
+// アイテム取得など、移動を止めない一時メッセージ
+function showTransientMessage(text, durationMs = 2000) {
+  const box = document.getElementById("dialogue-box");
+  const message = document.getElementById("dialogue-message");
+
+  if (!box || !message) {
+    return;
+  }
+
+  message.textContent = text;
+  box.hidden = false;
+
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+  }
+
+  messageTimer = setTimeout(() => {
+    if (!isDialogueOpen()) {
+      box.hidden = true;
+    }
+
+    messageTimer = null;
+  }, durationMs);
+}
