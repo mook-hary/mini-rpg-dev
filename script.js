@@ -7,12 +7,44 @@ const PLAYER = {
   color: "#3b82f6",
 };
 
+const DIRECTION = {
+  UP: "up",
+  DOWN: "down",
+  LEFT: "left",
+  RIGHT: "right",
+};
+
 const startPosition = getPlayerStartPosition(PLAYER.size);
 
 const player = {
   x: startPosition.x,
   y: startPosition.y,
+  direction: DIRECTION.DOWN,
 };
+
+function getDirectionFromInput(dx, dy) {
+  if (dx === 0 && dy === 0) {
+    return null;
+  }
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    return dx < 0 ? DIRECTION.LEFT : DIRECTION.RIGHT;
+  }
+
+  return dy < 0 ? DIRECTION.UP : DIRECTION.DOWN;
+}
+
+function updateDirection(dx, dy) {
+  const nextDirection = getDirectionFromInput(dx, dy);
+  if (!nextDirection) {
+    return;
+  }
+
+  if (player.direction !== nextDirection) {
+    player.direction = nextDirection;
+    console.log("direction:", player.direction);
+  }
+}
 
 function tryMove(dx, dy) {
   const nextX = player.x + dx;
@@ -35,7 +67,26 @@ function update() {
   if (input.isPressed("up")) dy -= PLAYER.speed;
   if (input.isPressed("down")) dy += PLAYER.speed;
 
+  updateDirection(dx, dy);
   tryMove(dx, dy);
+  handleActionInput();
+}
+
+function handleActionInput() {
+  if (typeof input.consumeAction !== "function") {
+    return;
+  }
+
+  if (!input.consumeAction()) {
+    return;
+  }
+
+  if (typeof checkFrontInteraction !== "function") {
+    console.warn("checkFrontInteraction is not available");
+    return;
+  }
+
+  checkFrontInteraction(player, PLAYER.size);
 }
 
 function drawPlayer() {
@@ -47,12 +98,18 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   applyCamera(ctx);
   drawMap(ctx);
+  drawNpcs(ctx);
   drawPlayer();
   resetCamera(ctx);
 }
 
 function gameLoop() {
-  update();
+  try {
+    update();
+  } catch (error) {
+    console.error("update error:", error);
+  }
+
   updateCamera(canvas.width, canvas.height, player, PLAYER.size);
   render();
   requestAnimationFrame(gameLoop);

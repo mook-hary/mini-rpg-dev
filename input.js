@@ -6,6 +6,8 @@ function createInput() {
     right: false,
   };
 
+  let actionPressed = false;
+
   const KEY_BINDINGS = {
     ArrowUp: "up",
     ArrowDown: "down",
@@ -28,6 +30,12 @@ function createInput() {
   }
 
   function onKeyDown(event) {
+    if (event.code === "Space") {
+      event.preventDefault();
+      actionPressed = true;
+      return;
+    }
+
     if (setDirection(event.code, true)) {
       event.preventDefault();
     }
@@ -51,6 +59,11 @@ function createInput() {
     },
     getState() {
       return { ...state };
+    },
+    consumeAction() {
+      const pressed = actionPressed;
+      actionPressed = false;
+      return pressed;
     },
   };
 }
