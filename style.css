@@ -23,15 +23,21 @@ body {
 
 #dialogue-box {
   position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  padding: 16px;
-  background: rgba(15, 15, 26, 0.95);
-  border: 2px solid #6b5344;
-  border-radius: 8px;
-  color: #eee;
+  left: 50%;
+  bottom: 20px;
+  z-index: 10;
+  width: 80%;
+  padding: 20px 24px;
+  background: rgba(0, 0, 0, 0.92);
+  border: 2px solid #fff;
+  border-radius: 10px;
+  color: #fff;
   font-family: system-ui, sans-serif;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  transform: translateX(-50%);
+}
+
+#dialogue-message {
+  margin: 0;
 }
