@@ -20,6 +20,28 @@ function getItemCount(id) {
   return inventory[id]?.count ?? 0;
 }
 
+function getInventorySaveState() {
+  return getInventoryEntries().map(({ id, name, count }) => ({
+    id,
+    name,
+    count,
+  }));
+}
+
+function applyInventorySaveState(savedInventory) {
+  for (const key of Object.keys(inventory)) {
+    delete inventory[key];
+  }
+
+  for (const entry of savedInventory) {
+    inventory[entry.id] = {
+      id: entry.id,
+      name: entry.name,
+      count: entry.count,
+    };
+  }
+}
+
 function getInventoryLines() {
   const lines = ["INVENTORY"];
   const entries = getInventoryEntries();

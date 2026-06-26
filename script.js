@@ -56,6 +56,7 @@ function tryMove(dx, dy) {
 
 function update() {
   handleActionInput();
+  handleSaveLoadInput(player);
 
   if (typeof isDialogueOpen === "function" && isDialogueOpen()) {
     resetPlayerAnimation(player);
@@ -74,6 +75,7 @@ function update() {
   tryMove(dx, dy);
   updatePlayerAnimation(player, dx, dy);
   checkItemCollection(player, PLAYER.size);
+  checkDoorMapTransition(player, PLAYER.size);
 }
 
 function handleActionInput() {

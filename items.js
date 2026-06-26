@@ -7,6 +7,7 @@ const items = [
   {
     id: "coin",
     name: "Coin",
+    mapId: "map1",
     col: 16,
     row: 10,
     collected: false,
@@ -15,6 +16,7 @@ const items = [
   {
     id: "coin",
     name: "Coin",
+    mapId: "map1",
     col: 18,
     row: 10,
     collected: false,
@@ -23,6 +25,7 @@ const items = [
   {
     id: "potion",
     name: "Potion",
+    mapId: "map1",
     col: 22,
     row: 10,
     collected: false,
@@ -32,6 +35,7 @@ const items = [
   {
     id: "key",
     name: "Key",
+    mapId: "map1",
     col: 17,
     row: 13,
     collected: false,
@@ -39,6 +43,10 @@ const items = [
     color: "#c084fc",
   },
 ];
+
+function getItemsForCurrentMap() {
+  return items.filter((item) => item.mapId === getCurrentMapId());
+}
 
 function getItemPosition(item) {
   const offset = (MAP.tileSize - ITEM.size) / 2;
@@ -50,7 +58,7 @@ function getItemPosition(item) {
 }
 
 function getItemAtTile(col, row) {
-  for (const item of items) {
+  for (const item of getItemsForCurrentMap()) {
     if (!item.collected && item.col === col && item.row === row) {
       return item;
     }
@@ -76,7 +84,7 @@ function checkItemCollection(player, playerSize) {
 }
 
 function drawItems(ctx) {
-  for (const item of items) {
+  for (const item of getItemsForCurrentMap()) {
     if (item.collected) {
       continue;
     }
@@ -90,5 +98,31 @@ function drawItems(ctx) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     ctx.fill();
+  }
+}
+
+function getItemsSaveState() {
+  return items.map(({ id, mapId, col, row, collected }) => ({
+    id,
+    mapId,
+    col,
+    row,
+    collected,
+  }));
+}
+
+function applyItemsSaveState(savedItems) {
+  for (const saved of savedItems) {
+    const item = items.find(
+      (entry) =>
+        entry.id === saved.id &&
+        entry.mapId === saved.mapId &&
+        entry.col === saved.col &&
+        entry.row === saved.row
+    );
+
+    if (item) {
+      item.collected = saved.collected;
+    }
   }
 }

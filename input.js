@@ -7,6 +7,8 @@ function createInput() {
   };
 
   let actionPressed = false;
+  let savePressed = false;
+  let loadPressed = false;
 
   const KEY_BINDINGS = {
     ArrowUp: "up",
@@ -33,6 +35,18 @@ function createInput() {
     if (event.code === "Space") {
       event.preventDefault();
       actionPressed = true;
+      return;
+    }
+
+    if (event.code === "F6") {
+      event.preventDefault();
+      savePressed = true;
+      return;
+    }
+
+    if (event.code === "F9") {
+      event.preventDefault();
+      loadPressed = true;
       return;
     }
 
@@ -63,6 +77,16 @@ function createInput() {
     consumeAction() {
       const pressed = actionPressed;
       actionPressed = false;
+      return pressed;
+    },
+    consumeSave() {
+      const pressed = savePressed;
+      savePressed = false;
+      return pressed;
+    },
+    consumeLoad() {
+      const pressed = loadPressed;
+      loadPressed = false;
       return pressed;
     },
   };

@@ -4,9 +4,13 @@ const NPC = {
 };
 
 const npcs = [
-  { id: "npc1", col: 28, row: 12 },
-  { id: "npc2", col: 12, row: 18 },
+  { id: "npc1", mapId: "map1", col: 28, row: 12 },
+  { id: "npc2", mapId: "map1", col: 12, row: 18 },
 ];
+
+function getNpcsForCurrentMap() {
+  return npcs.filter((npc) => npc.mapId === getCurrentMapId());
+}
 
 function tileToWorldPosition(col, row, size) {
   return {
@@ -20,7 +24,7 @@ function getNpcPosition(npc) {
 }
 
 function drawNpcs(ctx) {
-  for (const npc of npcs) {
+  for (const npc of getNpcsForCurrentMap()) {
     const { x, y } = getNpcPosition(npc);
 
     ctx.fillStyle = NPC.color;
@@ -33,7 +37,7 @@ function isRectOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
 }
 
 function isNpcBlockedRect(x, y, width, height) {
-  for (const npc of npcs) {
+  for (const npc of getNpcsForCurrentMap()) {
     const { x: npcX, y: npcY } = getNpcPosition(npc);
 
     if (isRectOverlap(x, y, width, height, npcX, npcY, NPC.size, NPC.size)) {
@@ -45,7 +49,7 @@ function isNpcBlockedRect(x, y, width, height) {
 }
 
 function getNpcAtTile(col, row) {
-  for (const npc of npcs) {
+  for (const npc of getNpcsForCurrentMap()) {
     if (npc.col === col && npc.row === row) {
       return npc;
     }
