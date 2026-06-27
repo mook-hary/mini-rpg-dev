@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview: Player Idle Down (Asset-05.3)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #1a1a2e;
+      color: #e8e8f0;
+      padding: 24px;
+    }
+    h1 { font-size: 1.1rem; margin: 0 0 8px; }
+    .sub { color: #9aa; font-size: 0.85rem; margin-bottom: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .panel {
+      background: #252540;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .panel h2 { font-size: 0.95rem; margin: 0 0 12px; }
+    canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #444;
+    }
+    .bg-grass { background: repeating-linear-gradient(45deg, #3d6b3d 0 8px, #356035 8px 16px); }
+    .bg-dark { background: #111; }
+    .controls { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 0.85rem; }
+    label { display: flex; align-items: center; gap: 6px; }
+    input[type="range"] { width: 120px; }
+    .frames-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .frame-box { text-align: center; font-size: 0.75rem; color: #9aa; }
+    .frame-box canvas { margin-bottom: 4px; }
+    .info { margin-top: 16px; font-size: 0.8rem; color: #9aa; line-height: 1.6; }
+    .badge {
+      display: inline-block;
+      background: #3a3a60;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Player Idle Down — Preview (Prototype)</h1>
+  <p class="sub">
+    Asset-05.3 確認用。本ゲーム (<code>index.html</code>) とは独立しています。
+    <span class="badge">preview only</span>
+  </p>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>アニメーション（ゲーム相当 2x）</h2>
+      <canvas id="anim-canvas" width="128" height="128" class="bg-grass"></canvas>
+      <div class="controls">
+        <label>
+          コマ時間 (ms)
+          <input type="range" id="frame-ms" min="60" max="300" step="10" value="120" />
+          <span id="frame-ms-val">120</span>
+        </label>
+        <label>
+          倍率
+          <select id="scale">
+            <option value="1">1x (32px)</option>
+            <option value="2" selected>2x (64px)</option>
+            <option value="3">3x (96px)</option>
+            <option value="4">4x (128px)</option>
+          </select>
+        </label>
+        <label>
+          <input type="checkbox" id="paused" /> 一時停止
+        </label>
+        <span id="frame-label">frame 0</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>静止フレーム比較（2x）</h2>
+      <div class="frames-row" id="frames-row"></div>
+    </div>
+
+    <div class="panel">
+      <h2>小さく表示（1x — 実ゲームサイズ）</h2>
+      <canvas id="small-canvas" width="96" height="96" class="bg-dark"></canvas>
+      <p class="info">32×32 を 1x で 3 体並べて表示。主人公として認識できるか確認。</p>
+    </div>
+  </div>
+
+  <div class="panel info" style="margin-top: 20px;">
+    <strong>確認ポイント</strong><br />
+    ・0 → 1 → 2 → 3 ループが自然か<br />
+    ・120ms/コマ（0.12秒）で速すぎないか → スライダーで 80〜200ms も試せます<br />
+    ・フレーム 2 の髪・バッグ揺れが不自然でないか<br />
+    ・1x 表示でも主人公に見えるか
+  </div>
+
+  <script src="preview_player_idle.js"></script>
+</body>
+</html>

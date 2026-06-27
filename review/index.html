@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M31 Sprite Review Tool</title>
+  <link rel="stylesheet" href="review.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="main">
+      <header class="header">
+        <h1>M31 Sprite Review Tool</h1>
+        <p>開発用 — ゲーム本体とは独立。スプライトを組み込む前に確認する。</p>
+      </header>
+
+      <div class="toolbar" id="category-tabs" role="tablist" aria-label="カテゴリ">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="asset-select">アセット</label>
+          <select id="asset-select"></select>
+        </div>
+        <div class="toolbar-group">
+          <label for="scale-select">倍率</label>
+          <select id="scale-select">
+            <option value="1">100%</option>
+            <option value="2" selected>200%</option>
+            <option value="4">400%</option>
+            <option value="8">800%</option>
+          </select>
+        </div>
+        <div class="toolbar-group">
+          <label for="bg-select">背景</label>
+          <select id="bg-select">
+            <option value="transparent">透明</option>
+            <option value="white">白</option>
+            <option value="black">黒</option>
+            <option value="grass">草色</option>
+            <option value="wood">木床色</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="viewport-wrap">
+        <div id="viewport" class="viewport bg-transparent">
+          <canvas id="sprite-canvas" width="32" height="32"></canvas>
+        </div>
+        <div id="empty-state" class="empty-state" hidden>
+          このカテゴリにはスプライトがありません。
+        </div>
+      </div>
+
+      <div class="frame-strip" id="frame-strip" hidden></div>
+
+      <div class="anim-bar">
+        <button type="button" class="btn" id="btn-play">再生</button>
+        <button type="button" class="btn" id="btn-pause" disabled>停止</button>
+        <button type="button" class="btn" id="btn-prev">◀ 前</button>
+        <button type="button" class="btn" id="btn-next">次 ▶</button>
+        <label>
+          <input type="checkbox" id="loop-check" checked />
+          ループ
+        </label>
+        <label>
+          速度 (ms/コマ)
+          <input type="range" id="speed-range" min="40" max="400" step="10" value="120" />
+          <span id="speed-val">120</span>
+        </label>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <h2>情報</h2>
+      <ul class="info-list">
+        <li>
+          <span class="info-label">ファイル名</span>
+          <span class="info-value" id="info-filename">—</span>
+        </li>
+        <li>
+          <span class="info-label">サイズ</span>
+          <span class="info-value" id="info-size">—</span>
+        </li>
+        <li>
+          <span class="info-label">色数</span>
+          <span class="info-value" id="info-colors">—</span>
+        </li>
+        <li>
+          <span class="info-label">現在フレーム</span>
+          <span class="info-value" id="info-frame">—</span>
+        </li>
+        <li>
+          <span class="info-label">倍率</span>
+          <span class="info-value" id="info-scale">—</span>
+        </li>
+        <li>
+          <span class="info-label">カテゴリ</span>
+          <span class="info-value" id="info-category">—</span>
+        </li>
+      </ul>
+    </aside>
+  </div>
+
+  <script src="review.js"></script>
+</body>
+</html>
