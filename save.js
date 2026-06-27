@@ -13,6 +13,7 @@ function createSaveData(player) {
     inventory: getInventorySaveState(),
     items: getItemsSaveState(),
     doors: getDoorsSaveState(),
+    interactables: getInteractablesSaveState(),
   };
 }
 
@@ -42,6 +43,7 @@ function loadGame(player) {
   applyInventorySaveState(data.inventory);
   applyItemsSaveState(data.items);
   applyDoorsSaveState(data.doors);
+  applyInteractablesSaveState(data.interactables);
 
   if (typeof closeDialogue === "function") {
     closeDialogue();

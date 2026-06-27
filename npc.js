@@ -16,26 +16,7 @@ const npcs = [
   },
 ];
 
-const npcSprites = {};
-
-function loadNpcSprite(npc) {
-  if (!npc.spritePath) {
-    return;
-  }
-
-  const img = new Image();
-  img.src = npc.spritePath;
-  img.onload = () => {
-    npcSprites[npc.id] = img;
-  };
-  img.onerror = () => {
-    npcSprites[npc.id] = null;
-  };
-}
-
-for (const npc of npcs) {
-  loadNpcSprite(npc);
-}
+preloadSprites(npcs.map((npc) => npc.spritePath).filter(Boolean));
 
 function getNpcDrawColor(npc) {
   return npc.color ?? NPC.color;
@@ -59,15 +40,15 @@ function getNpcPosition(npc) {
 function drawNpcs(ctx) {
   for (const npc of getNpcsForCurrentMap()) {
     const { x, y } = getNpcPosition(npc);
-    const sprite = npcSprites[npc.id];
 
-    if (sprite) {
-      ctx.drawImage(sprite, x, y, NPC.size, NPC.size);
-      continue;
-    }
-
-    ctx.fillStyle = getNpcDrawColor(npc);
-    ctx.fillRect(x, y, NPC.size, NPC.size);
+    drawSpriteOrRect(ctx, {
+      x,
+      y,
+      width: NPC.size,
+      height: NPC.size,
+      spritePath: npc.spritePath,
+      color: getNpcDrawColor(npc),
+    });
   }
 }
 

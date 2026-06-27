@@ -1,6 +1,7 @@
 const INTERACTABLE = {
   SIGN: "sign",
   ROCK: "rock",
+  CHEST: "chest",
 };
 
 const INTERACTABLE_STYLE = {
@@ -13,6 +14,12 @@ const INTERACTABLE_STYLE = {
     width: 28,
     height: 24,
     color: "#78716c",
+  },
+  chest: {
+    width: 28,
+    height: 24,
+    color: "#ca8a04",
+    openedColor: "#854d0e",
   },
 };
 
@@ -35,7 +42,25 @@ const interactables = [
     solid: true,
     message: "大きな岩が転がっている。",
   },
+  {
+    id: "chest1",
+    type: INTERACTABLE.CHEST,
+    mapId: "map1",
+    col: 24,
+    row: 14,
+    solid: true,
+    opened: false,
+    spritePath: "sprites/object/chest.png",
+    itemId: "potion",
+    itemName: "Potion",
+    lootMessage: "ポーションを手に入れた！",
+    emptyMessage: "空っぽだ。",
+  },
 ];
+
+preloadSprites(
+  interactables.map((object) => object.spritePath).filter(Boolean)
+);
 
 function getInteractablesForCurrentMap() {
   return interactables.filter(
@@ -58,15 +83,29 @@ function getInteractableAtFront(player, playerSize) {
   return getInteractableAtTile(frontTile.col, frontTile.row);
 }
 
-function handleInteractable(object) {
-  if (!object.message) {
+function handleChest(chest) {
+  if (chest.opened) {
+    openInteractMessage(chest.emptyMessage);
     return;
   }
 
+  chest.opened = true;
+
+  // 将来: itemId があれば addItem(chest.itemId, chest.itemName) など
+
+  openInteractMessage(chest.lootMessage);
+}
+
+function handleInteractable(object) {
   switch (object.type) {
     case INTERACTABLE.SIGN:
     case INTERACTABLE.ROCK:
-      openInteractMessage(object.message);
+      if (object.message) {
+        openInteractMessage(object.message);
+      }
+      break;
+    case INTERACTABLE.CHEST:
+      handleChest(object);
       break;
     default:
       break;
@@ -101,6 +140,14 @@ function isInteractableBlockedRect(x, y, width, height) {
   return false;
 }
 
+function getInteractableDrawColor(object, style) {
+  if (object.type === INTERACTABLE.CHEST && object.opened && style.openedColor) {
+    return style.openedColor;
+  }
+
+  return style.color;
+}
+
 function drawInteractables(ctx) {
   for (const object of getInteractablesForCurrentMap()) {
     const style = INTERACTABLE_STYLE[object.type];
@@ -112,7 +159,39 @@ function drawInteractables(ctx) {
     const x = object.col * MAP.tileSize + (MAP.tileSize - style.width) / 2;
     const y = object.row * MAP.tileSize + (MAP.tileSize - style.height) / 2;
 
-    ctx.fillStyle = style.color;
-    ctx.fillRect(x, y, style.width, style.height);
+    drawSpriteOrRect(ctx, {
+      x,
+      y,
+      width: style.width,
+      height: style.height,
+      spritePath: object.spritePath,
+      color: getInteractableDrawColor(object, style),
+    });
+  }
+}
+
+function getInteractablesSaveState() {
+  return interactables
+    .filter((object) => object.type === INTERACTABLE.CHEST)
+    .map(({ id, mapId, opened }) => ({
+      id,
+      mapId,
+      opened,
+    }));
+}
+
+function applyInteractablesSaveState(savedInteractables) {
+  if (!Array.isArray(savedInteractables)) {
+    return;
+  }
+
+  for (const saved of savedInteractables) {
+    const object = interactables.find(
+      (entry) => entry.id === saved.id && entry.mapId === saved.mapId
+    );
+
+    if (object && object.type === INTERACTABLE.CHEST) {
+      object.opened = saved.opened;
+    }
   }
 }
