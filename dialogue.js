@@ -1,48 +1,112 @@
 const DIALOGUES = {
-  npc1: "こんにちは！",
-  npc2: "ようこそ！",
+  npc1: {
+    messages: ["こんにちは！", "今日は海風が気持ちいいね。", "また話そう。"],
+  },
+  npc2: {
+    messages: ["ようこそ！", "この村は小さいけど、のんびりしていいところだよ。"],
+  },
+  dog: {
+    messages: ["🐶 わん！"],
+  },
 };
 
 const dialogue = {
   isOpen: false,
   currentNpc: null,
+  messages: [],
+  messageIndex: 0,
 };
 
-function getDialogueMessage(npc) {
-  return DIALOGUES[npc.id] ?? "...";
+function getNpcMessages(npc) {
+  const data = DIALOGUES[npc.id];
+
+  if (!data) {
+    return ["..."];
+  }
+
+  if (Array.isArray(data.messages)) {
+    return data.messages;
+  }
+
+  return ["..."];
 }
 
 function isDialogueOpen() {
   return dialogue.isOpen;
 }
 
-function openDialogue(npc) {
+function isInteractionBlocking() {
+  return dialogue.isOpen;
+}
+
+function showCurrentMessage() {
   const box = document.getElementById("dialogue-box");
   const message = document.getElementById("dialogue-message");
 
   if (!box || !message) {
-    console.error("dialogue-box or dialogue-message not found");
     return;
   }
 
-  dialogue.isOpen = true;
-  dialogue.currentNpc = npc;
-  message.textContent = getDialogueMessage(npc);
+  message.textContent = dialogue.messages[dialogue.messageIndex] ?? "";
   box.hidden = false;
+}
+
+function openMessageSession(messages) {
+  const box = document.getElementById("dialogue-box");
+
+  if (!box) {
+    console.error("dialogue-box not found");
+    return;
+  }
+
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+    messageTimer = null;
+  }
+
+  dialogue.isOpen = true;
+  dialogue.messages = messages;
+  dialogue.messageIndex = 0;
+  showCurrentMessage();
+}
+
+function openInteractMessage(text) {
+  dialogue.currentNpc = null;
+  openMessageSession([text]);
+}
+
+function openDialogue(npc) {
+  dialogue.currentNpc = npc;
+  openMessageSession(getNpcMessages(npc));
+}
+
+function advanceMessage() {
+  if (!dialogue.isOpen) {
+    return;
+  }
+
+  const nextIndex = dialogue.messageIndex + 1;
+
+  if (nextIndex < dialogue.messages.length) {
+    dialogue.messageIndex = nextIndex;
+    showCurrentMessage();
+    return;
+  }
+
+  closeDialogue();
 }
 
 function closeDialogue() {
   const box = document.getElementById("dialogue-box");
 
-  if (!box) {
-    dialogue.isOpen = false;
-    dialogue.currentNpc = null;
-    return;
-  }
-
   dialogue.isOpen = false;
   dialogue.currentNpc = null;
-  box.hidden = true;
+  dialogue.messages = [];
+  dialogue.messageIndex = 0;
+
+  if (box) {
+    box.hidden = true;
+  }
 }
 
 let messageTimer = null;

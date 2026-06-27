@@ -32,8 +32,8 @@ function getNpcAtFront(player, playerSize) {
 }
 
 function handleFrontInteraction(player, playerSize) {
-  if (isDialogueOpen()) {
-    closeDialogue();
+  if (isInteractionBlocking()) {
+    advanceMessage();
     return;
   }
 
@@ -45,7 +45,15 @@ function handleFrontInteraction(player, playerSize) {
     return;
   }
 
+  const interactable = getInteractableAtTile(frontTile.col, frontTile.row);
+
+  if (interactable) {
+    handleInteractable(interactable);
+    return;
+  }
+
   const npc = getNpcAtFront(player, playerSize);
+
   if (npc) {
     openDialogue(npc);
   }

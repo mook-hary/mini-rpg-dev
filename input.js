@@ -32,7 +32,7 @@ function createInput() {
   }
 
   function onKeyDown(event) {
-    if (event.code === "Space") {
+    if (event.code === "Space" || event.code === "Enter") {
       event.preventDefault();
       actionPressed = true;
       return;

@@ -6,7 +6,40 @@ const NPC = {
 const npcs = [
   { id: "npc1", mapId: "map1", col: 28, row: 12 },
   { id: "npc2", mapId: "map1", col: 12, row: 18 },
+  {
+    id: "dog",
+    mapId: "map1",
+    col: 18,
+    row: 14,
+    color: "#a16207",
+    spritePath: "sprites/npc/dog.png",
+  },
 ];
+
+const npcSprites = {};
+
+function loadNpcSprite(npc) {
+  if (!npc.spritePath) {
+    return;
+  }
+
+  const img = new Image();
+  img.src = npc.spritePath;
+  img.onload = () => {
+    npcSprites[npc.id] = img;
+  };
+  img.onerror = () => {
+    npcSprites[npc.id] = null;
+  };
+}
+
+for (const npc of npcs) {
+  loadNpcSprite(npc);
+}
+
+function getNpcDrawColor(npc) {
+  return npc.color ?? NPC.color;
+}
 
 function getNpcsForCurrentMap() {
   return npcs.filter((npc) => npc.mapId === getCurrentMapId());
@@ -26,8 +59,14 @@ function getNpcPosition(npc) {
 function drawNpcs(ctx) {
   for (const npc of getNpcsForCurrentMap()) {
     const { x, y } = getNpcPosition(npc);
+    const sprite = npcSprites[npc.id];
 
-    ctx.fillStyle = NPC.color;
+    if (sprite) {
+      ctx.drawImage(sprite, x, y, NPC.size, NPC.size);
+      continue;
+    }
+
+    ctx.fillStyle = getNpcDrawColor(npc);
     ctx.fillRect(x, y, NPC.size, NPC.size);
   }
 }

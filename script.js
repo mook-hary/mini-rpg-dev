@@ -58,7 +58,7 @@ function update() {
   handleActionInput();
   handleSaveLoadInput(player);
 
-  if (typeof isDialogueOpen === "function" && isDialogueOpen()) {
+  if (typeof isInteractionBlocking === "function" && isInteractionBlocking()) {
     resetPlayerAnimation(player);
     return;
   }
@@ -98,6 +98,7 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   applyCamera(ctx);
   drawMap(ctx);
+  drawInteractables(ctx);
   drawDoors(ctx);
   drawItems(ctx);
   drawNpcs(ctx);
