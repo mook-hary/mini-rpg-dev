@@ -125,6 +125,53 @@ git push origin main
 
 ---
 
+## Asset Workflow
+
+AI だけでスプライト制作を行う際の、Asset 共通フローです。
+今後すべての Asset を同じ手順で制作します。
+
+```
+Concept Art
+    ↓
+Review
+    ↓
+Approved
+    ↓
+32×32 Sprite
+    ↓
+Review
+    ↓
+Approved
+    ↓
+4 Direction
+    ↓
+Walk Animation
+    ↓
+Game Integration
+```
+
+### 各ステップの概要
+
+| ステップ | 内容 |
+|----------|------|
+| Concept Art | コンセプトアートを制作する |
+| Review | 世界観・キャラ設定との整合を確認する |
+| Approved | 採用を決定し、`CHARACTER_BIBLE.md` 等のデザイン履歴に記録する |
+| 32×32 Sprite | 採用デザインを基準にドット絵（32×32）を制作する |
+| Review | `ART_BIBLE.md` のドットルール・色設計に沿っているか確認する |
+| Approved | スプライト採用を決定する |
+| 4 Direction | 上下左右の 4 方向スプライトを制作する |
+| Walk Animation | 歩行 4 コマ・待機 1 コマのアニメーションを制作する |
+| Game Integration | `sprites/` に配置し、ゲームへ組み込む |
+
+### 参照ドキュメント
+
+- [ART_BIBLE.md](./ART_BIBLE.md) — 世界観・色・ドットルール
+- [CHARACTER_BIBLE.md](./CHARACTER_BIBLE.md) — 主人公設定・スプライト仕様・デザイン履歴
+- [AI_DASHBOARD.md](./AI_DASHBOARD.md) — 現在の Asset 作業状況
+
+---
+
 ## プロジェクトの設計方針
 
 Agent に守ってほしい原則です。
